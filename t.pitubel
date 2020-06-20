@@ -1,0 +1,39 @@
+*BASIC
+NEW
+AUTO
+REM>PiTubeList
+:
+DIM code% &100
+target%=&2000
+scratch=&70
+OSASCI=&FFE3
+:
+FOR pass%=0 TO 1
+P%=target%
+O%=code%
+[ OPT 4+3*pass%
+LDA #text MOD 256
+STA scratch
+LDA #text DIV 256
+STA scratch+1
+LDY #0
+.loop
+LDA (scratch),Y
+BEQ exit
+JSR OSASCI
+INC &70
+BNE skipmsb
+INC &71
+.skipmsb
+JMP loop
+.exit
+RTS
+.text
+EQUS " n Processor - *FX 151,230,n"
+EQUB &0D
+EQUB 0 \ to test - do not include
+]
+size%=O%-code%
+NEXT
+:
+PRINT "Code assembled at &";~code%;"+";~size%;" target &";~target%
