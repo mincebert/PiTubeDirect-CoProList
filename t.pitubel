@@ -31,9 +31,56 @@ RTS
 .text
 EQUS " n Processor - *FX 151,230,n"
 EQUB &0D
-EQUB 0 \ to test - do not include
+.textend
+EQUB 0 \ to stop test
 ]
 size%=O%-code%
 NEXT
 :
 PRINT "Code assembled at &";~code%;"+";~size%;" target &";~target%
+END
+:
+DEFPROCdumpcode
+LOCAL linebytes%,lineaddr,coladdr%,byte%
+linebytes%=12
+:
+REM dump the code part
+FOR lineaddr%=target% TO text-1 STEP linebytes%
+PRINT "  ";
+FOR coladdr%=lineaddr% TO FNmin(coladdr%+linebytes%-1,text-1)
+IF coladdr%>lineaddr% THEN PRINT " ";
+byte%=?(coladdr%-target%+code%)
+PRINT "0x";FNchex(byte%);",";
+NEXT
+PRINT
+NEXT
+:
+REM dump the text part
+FOR lineaddr%=text TO textend-1 STEP linebytes%
+PRINT "  ";
+FOR coladdr%=lineaddr% TO FNmin(coladdr%+linebytes%-1,textend-1)
+IF coladdr%>lineaddr% THEN PRINT " ";
+byte%=?(coladdr%-target%+code%)
+IF byte%>=32 AND byte%<=126 THEN PRINT "'";CHR$(byte%);"',"; ELSE PRINT "0x";FNchex(byte%);",";
+NEXT
+PRINT
+NEXT
+ENDPROC
+:
+DEFFNmin(a%,b%)
+IF a%<b% THEN =a%
+=b%
+:
+REM print byte in C hex format
+DEFFNchex(byte%)
+=FNlower(RIGHT$(STR$~(byte% OR &100),2))
+:
+DEFFNlower(s$)
+LOCAL n%,r$,c$
+r$=""
+FOR n%=1 TO LEN(s$)
+c$=MID$(s$,n%,1)
+IF c$>="A" AND c$<="Z" THEN c$=CHR$(ASC(c$) OR 32)
+r$=r$+c$
+NEXT
+=r$
