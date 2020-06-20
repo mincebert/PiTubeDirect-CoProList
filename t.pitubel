@@ -6,12 +6,23 @@ REM>PiTubeList
 DIM code% &100
 target%=&2000
 scratch=&70
+OSBYTE=&FFF4
 OSASCI=&FFE3
 :
 FOR pass%=0 TO 1
 P%=target%
 O%=code%
 [ OPT 4+3*pass%
+LDA #0
+LDX #1
+JSR OSBYTE
+CPX #0
+BNE notelectron
+LDA #ASC"4"
+STA textfxnum+1
+LDA #ASC"7"
+STA textfxnum+2
+.notelectron
 LDA #text MOD 256
 STA scratch
 LDA #text DIV 256
@@ -22,14 +33,15 @@ LDA (scratch),Y
 BEQ exit
 JSR OSASCI
 INC &70
-BNE skipmsb
+BNE loop
 INC &71
-.skipmsb
 JMP loop
 .exit
 RTS
 .text
-EQUS " n Processor - *FX 151,230,n"
+EQUS " n Processor - *FX "
+.textfxnum
+EQUS "151,230,n"
 EQUB &0D
 .textend
 EQUB 0 \ to stop test
@@ -61,7 +73,7 @@ PRINT "  ";
 FOR coladdr%=lineaddr% TO FNmin(coladdr%+linebytes%-1,textend-1)
 IF coladdr%>lineaddr% THEN PRINT " ";
 byte%=?(coladdr%-target%+code%)
-IF byte%>=32 AND byte%<=126 THEN PRINT "'";CHR$(byte%);"',"; ELSE PRINT "0x";FNchex(byte%);",";
+IF byte%>=32 AND byte%<=126 THEN PRINT "'";CHR$(byte%);"', "; ELSE PRINT "0x"+FNchex(byte%)+",";
 NEXT
 PRINT
 NEXT
