@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# mkssd - make SSD and copy files to it
+
+
+SSD=pitubelist.ssd
+
+beeb blank_ssd $SSD
+beeb title $SSD PITUBELIST
+beeb putfile $SSD ?.pitubel
