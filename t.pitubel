@@ -39,7 +39,7 @@ JMP loop
 .exit
 RTS
 .text
-EQUS " n Processor - *FX "
+EQUS "   n Processor - *FX "
 .textfxnum
 EQUS "151,230,n"
 EQUB &0D
