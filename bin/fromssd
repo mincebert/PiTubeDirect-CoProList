@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# fromssd - extract and convert files from SSD
+
+
+SSD=pitubelist.ssd
+DIR=pitubelist
+
+beeb getfile $SSD $DIR
+cp $DIR/b.pitubel .
+spool2exec $DIR/t.pitubel > t.pitubel
+sed 's/\r//' $DIR/c.pitubel | sed 's/ $//' | grep '^  ' > c.pitubel
